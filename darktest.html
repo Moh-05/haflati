@@ -4,74 +4,36 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="color-scheme" content="dark light">
-<title>Samsung dark mode test 3</title>
+<title>Samsung dark mode test 4</title>
 <style>
-  body{background:#171215; color:#F5ECEF; font-family:system-ui,sans-serif;
-       margin:0; padding:20px; font-size:15px}
-  h1{font-size:18px; margin:0 0 4px}
-  p.note{color:#BCA3AA; font-size:13px; margin:0 0 20px; line-height:1.5}
-  .row{margin-bottom:16px; padding:14px; border:1px solid #43323A; border-radius:10px}
-  .lbl{font-size:12px; color:#BCA3AA; margin-bottom:10px; font-family:monospace}
-  .head{font-size:27px; font-weight:800; line-height:1.35}
+  body{background:#171215;color:#F5ECEF;font-family:system-ui,sans-serif;margin:0;padding:20px}
+  .row{margin-bottom:16px;padding:14px;border:1px solid #43323A;border-radius:10px}
+  .lbl{font-size:12px;color:#BCA3AA;margin-bottom:10px;font-family:monospace}
+  .head{font-size:27px;font-weight:800;line-height:1.35}
+  p.note{color:#BCA3AA;font-size:13px;line-height:1.5}
 
-  /* current — gradient clipped to text. Samsung repaints this. */
-  .h1{background:linear-gradient(100deg,#F0BFCB,#D97C93 45%,#B59ACB);
-      -webkit-background-clip:text; background-clip:text; color:transparent}
+  /* A: current gradient */
+  .a{background:linear-gradient(100deg,#F0BFCB,#D97C93 45%,#B59ACB);
+     -webkit-background-clip:text;background-clip:text;color:transparent}
 
-  /* option 1 — plain solid colour, no gradient at all */
-  .h2{color:#D97C93}
+  /* B: gradient made of an SVG image instead of a colour gradient.
+        Samsung does not repaint images. */
+  .b{background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='300' height='40'><defs><linearGradient id='g' x1='0' y1='0' x2='1' y2='0'><stop offset='0' stop-color='%23F0BFCB'/><stop offset='.45' stop-color='%23D97C93'/><stop offset='1' stop-color='%23B59ACB'/></linearGradient></defs><rect width='300' height='40' fill='url(%23g)'/></svg>");
+     background-size:cover;-webkit-background-clip:text;background-clip:text;color:transparent}
 
-  /* option 2 — the lighter rose, more contrast on dark */
-  .h3{color:#F0BFCB}
-
-  /* option 3 — solid rose with a subtle mauve text-shadow for depth */
-  .h4{color:#E89AAE; text-shadow:0 1px 12px rgba(181,154,203,.35)}
-
-  /* option 4 — gradient, but each word its own solid colour */
-  .h5 span:nth-child(1){color:#F0BFCB}
-  .h5 span:nth-child(2){color:#D97C93}
-  .h5 span:nth-child(3){color:#B59ACB}
+  /* C: gradient + solid fallback underneath */
+  .c{color:#D97C93;background:linear-gradient(100deg,#F0BFCB,#D97C93 45%,#B59ACB);
+     -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
 </style>
 </head>
 <body>
+<h2 style="font-size:18px;margin:0 0 4px">Round 4 — headline only</h2>
+<p class="note" style="margin-bottom:20px">Forced dark <b>ON</b>. Which looks closest to pink/mauve?</p>
 
-<h1>Round 3 — the gradient headline</h1>
-<p class="note">
-  Forced dark still <b>ON</b>.<br>
-  The gradient headline cannot use the box-shadow trick, so it needs a
-  different answer. Which of these looks best to you?
-</p>
+<div class="row"><div class="lbl">A — current</div><div class="head a">بحجز تثق فيه</div></div>
+<div class="row"><div class="lbl">B — SVG gradient image</div><div class="head b">بحجز تثق فيه</div></div>
+<div class="row"><div class="lbl">C — gradient + fallback</div><div class="head c">بحجز تثق فيه</div></div>
 
-<div class="row">
-  <div class="lbl">CURRENT — gradient (goes dark red)</div>
-  <div class="head h1">بحجز تثق فيه</div>
-</div>
-
-<div class="row">
-  <div class="lbl">1 — solid rose #D97C93</div>
-  <div class="head h2">بحجز تثق فيه</div>
-</div>
-
-<div class="row">
-  <div class="lbl">2 — lighter rose #F0BFCB</div>
-  <div class="head h3">بحجز تثق فيه</div>
-</div>
-
-<div class="row">
-  <div class="lbl">3 — rose + soft mauve glow</div>
-  <div class="head h4">بحجز تثق فيه</div>
-</div>
-
-<div class="row">
-  <div class="lbl">4 — one colour per word</div>
-  <div class="head h5"><span>بحجز</span> <span>تثق</span> <span>فيه</span></div>
-</div>
-
-<p class="note" style="margin-top:24px">
-  Tell me the number you like best. Whichever you pick is used
-  <b>only</b> when the gradient would break — every other browser keeps
-  the gradient exactly as it is now.
-</p>
-
+<p class="note" style="margin-top:20px">Tell me: A, B or C looks best?</p>
 </body>
 </html>
