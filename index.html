@@ -1845,7 +1845,11 @@ html:not([data-theme="light"]) .mp-lbl{fill:#6E6470}
   </div>
 </div>
 <style>
-  #sbGate{position:fixed; inset:0; z-index:9999; display:grid; place-items:center;
+  /* display:grid would override the hidden attribute, so the gate is only
+     laid out once the script removes hidden — otherwise every browser
+     paints an empty overlay on top of the page. */
+  #sbGate:not([hidden]){display:grid}
+  #sbGate{position:fixed; inset:0; z-index:9999; place-items:center;
           padding:26px; background:#171215; overflow:auto}
   #sbGate .sg-card{max-width:390px; text-align:center}
   /* Samsung repaints background but not box-shadow, so the brand colours
