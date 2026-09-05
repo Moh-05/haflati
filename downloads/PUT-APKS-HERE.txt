@@ -1,0 +1,6 @@
+Drop the two APKs here, named exactly:
+
+  haflati-user.apk
+  haflati-partners.apk
+
+The buttons on #/download already point at these paths.
