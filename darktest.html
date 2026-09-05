@@ -4,95 +4,73 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="color-scheme" content="dark light">
-<title>Samsung dark mode test 2</title>
+<title>Samsung dark mode test 3</title>
 <style>
   body{background:#171215; color:#F5ECEF; font-family:system-ui,sans-serif;
        margin:0; padding:20px; font-size:15px}
   h1{font-size:18px; margin:0 0 4px}
   p.note{color:#BCA3AA; font-size:13px; margin:0 0 20px; line-height:1.5}
-  .row{margin-bottom:14px; padding:12px; border:1px solid #43323A; border-radius:10px}
-  .lbl{font-size:12px; color:#BCA3AA; margin-bottom:8px; font-family:monospace}
+  .row{margin-bottom:16px; padding:14px; border:1px solid #43323A; border-radius:10px}
+  .lbl{font-size:12px; color:#BCA3AA; margin-bottom:10px; font-family:monospace}
+  .head{font-size:27px; font-weight:800; line-height:1.35}
 
-  /* the winning technique from round 1 */
-  .fix{box-shadow:inset 0 0 0 999px #D97C93; background:transparent}
+  /* current — gradient clipped to text. Samsung repaints this. */
+  .h1{background:linear-gradient(100deg,#F0BFCB,#D97C93 45%,#B59ACB);
+      -webkit-background-clip:text; background-clip:text; color:transparent}
 
-  /* A — pill button, heavy radius. does the colour clip to the radius? */
-  .a{display:inline-block; padding:14px 30px; border-radius:999px;
-     color:#fff; font-weight:700; border:0; font-size:15px}
+  /* option 1 — plain solid colour, no gradient at all */
+  .h2{color:#D97C93}
 
-  /* B — small rounded square (category tile) */
-  .b{width:56px; height:56px; border-radius:16px}
+  /* option 2 — the lighter rose, more contrast on dark */
+  .h3{color:#F0BFCB}
 
-  /* C — tiny badge, circular */
-  .c{min-width:20px; height:20px; border-radius:999px; color:#fff;
-     display:inline-flex; align-items:center; justify-content:center;
-     font-size:12px; font-weight:800}
+  /* option 3 — solid rose with a subtle mauve text-shadow for depth */
+  .h4{color:#E89AAE; text-shadow:0 1px 12px rgba(181,154,203,.35)}
 
-  /* D — gradient text, the hero headline case */
-  .d{font-size:26px; font-weight:800;
-     background:linear-gradient(100deg,#F0BFCB,#D97C93 45%,#B59ACB);
-     -webkit-background-clip:text; background-clip:text; color:transparent}
-
-  /* E — thin bar (progress) */
-  .e{height:6px; border-radius:3px}
-
-  /* F — gold, to confirm it works for the money colour too */
-  .f{box-shadow:inset 0 0 0 999px #C9A24B; background:transparent;
-     padding:14px 30px; border-radius:999px; color:#2A1219;
-     font-weight:700; display:inline-block}
-
-  /* G — does text stay readable on top? */
-  .g{padding:14px; border-radius:12px; color:#fff; font-weight:600}
+  /* option 4 — gradient, but each word its own solid colour */
+  .h5 span:nth-child(1){color:#F0BFCB}
+  .h5 span:nth-child(2){color:#D97C93}
+  .h5 span:nth-child(3){color:#B59ACB}
 </style>
 </head>
 <body>
 
-<h1>Round 2 — does the fix hold up?</h1>
+<h1>Round 3 — the gradient headline</h1>
 <p class="note">
-  Forced dark mode still <b>ON</b>.<br>
-  Everything here uses the inset box-shadow trick that survived.<br>
-  I need to know: does the pink <b>clip properly to the rounded corners</b>,
-  or does it spill into a square?
+  Forced dark still <b>ON</b>.<br>
+  The gradient headline cannot use the box-shadow trick, so it needs a
+  different answer. Which of these looks best to you?
 </p>
 
 <div class="row">
-  <div class="lbl">A — pill button (the real CTA)</div>
-  <span class="a fix">جرّب التطبيق الآن</span>
+  <div class="lbl">CURRENT — gradient (goes dark red)</div>
+  <div class="head h1">بحجز تثق فيه</div>
 </div>
 
 <div class="row">
-  <div class="lbl">B — rounded tile</div>
-  <div class="b fix"></div>
+  <div class="lbl">1 — solid rose #D97C93</div>
+  <div class="head h2">بحجز تثق فيه</div>
 </div>
 
 <div class="row">
-  <div class="lbl">C — circular badge</div>
-  <span class="c fix">6</span>
+  <div class="lbl">2 — lighter rose #F0BFCB</div>
+  <div class="head h3">بحجز تثق فيه</div>
 </div>
 
 <div class="row">
-  <div class="lbl">D — gradient TEXT (not background) — still red?</div>
-  <div class="d">بحجز تثق فيه</div>
+  <div class="lbl">3 — rose + soft mauve glow</div>
+  <div class="head h4">بحجز تثق فيه</div>
 </div>
 
 <div class="row">
-  <div class="lbl">E — thin bar</div>
-  <div class="e fix"></div>
-</div>
-
-<div class="row">
-  <div class="lbl">F — gold version</div>
-  <span class="f">محفظة</span>
-</div>
-
-<div class="row">
-  <div class="lbl">G — white text legible on the pink?</div>
-  <div class="g fix">تحميل النسخة التجريبية</div>
+  <div class="lbl">4 — one colour per word</div>
+  <div class="head h5"><span>بحجز</span> <span>تثق</span> <span>فيه</span></div>
 </div>
 
 <p class="note" style="margin-top:24px">
-  Tell me: (1) are A B C E F G all soft pink/gold with clean rounded
-  corners? (2) is D still dark red?
+  Tell me the number you like best. Whichever you pick is used
+  <b>only</b> when the gradient would break — every other browser keeps
+  the gradient exactly as it is now.
 </p>
 
 </body>

@@ -932,6 +932,37 @@ html[data-theme="light"] .sg.on{color:#4A1D28}
   padding-inline-start:14px; border-inline-start:2px solid var(--rose);
 }
 .caption b{color:var(--cream); font-weight:600}
+
+/* ── Samsung Internet forced dark mode ───────────────────
+   Samsung's forced dark repaints any background it can read as a
+   colour — our rose CTA came out blood red — but it leaves box-shadow
+   alone. So the brand colours below are painted with an inset shadow
+   large enough to flood the box instead. It clips to border-radius
+   exactly like a background, so pills, circles and tiles keep their
+   shape.
+
+   This is invisible everywhere else: the shadow simply paints the
+   same colour already set behind it. Tested on an S25 Ultra, where
+   only this survived out of seven techniques.
+
+   The two -wash tokens are deliberately excluded — they are 10%
+   alpha tints and an opaque shadow would flatten them.
+
+   Remove this block if Samsung ever honours the color-scheme meta. ── */
+.btn-solid,
+.rail a.on i,
+.a-circ .badge,
+.a-filter,
+.b-off,
+.a-modes b.on,
+.a-cal i.sel,
+.walk-bar i,
+.sg.on{ box-shadow:inset 0 0 0 999px var(--rose) }
+.btn-solid:hover{ box-shadow:inset 0 0 0 999px var(--rose-soft) }
+.ledger-h b{ box-shadow:inset 0 0 0 999px var(--gold) }
+/* .skip is the keyboard skip-link and only ever visible on focus,
+   where it sits above the page — the shadow would outlive the focus
+   ring, so it keeps the plain background. */
 </style>
 </head>
 <style>
