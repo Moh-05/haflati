@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="color-scheme" content="dark light">
-<title>Samsung dark mode test</title>
+<title>Samsung dark mode test 2</title>
 <style>
   body{background:#171215; color:#F5ECEF; font-family:system-ui,sans-serif;
        margin:0; padding:20px; font-size:15px}
@@ -12,54 +12,88 @@
   p.note{color:#BCA3AA; font-size:13px; margin:0 0 20px; line-height:1.5}
   .row{margin-bottom:14px; padding:12px; border:1px solid #43323A; border-radius:10px}
   .lbl{font-size:12px; color:#BCA3AA; margin-bottom:8px; font-family:monospace}
-  .sw{height:52px; border-radius:8px; display:flex; align-items:center;
-      justify-content:center; color:#fff; font-weight:700; font-size:14px}
-  .target{background:#D97C93}
 
-  /* 1 — plain hex, the current situation (control) */
-  .t1{background:#D97C93}
+  /* the winning technique from round 1 */
+  .fix{box-shadow:inset 0 0 0 999px #D97C93; background:transparent}
 
-  /* 2 — gradient that resolves to one flat colour */
-  .t2{background:linear-gradient(#D97C93,#D97C93)}
+  /* A — pill button, heavy radius. does the colour clip to the radius? */
+  .a{display:inline-block; padding:14px 30px; border-radius:999px;
+     color:#fff; font-weight:700; border:0; font-size:15px}
 
-  /* 3 — background-image gradient, same idea, different property */
-  .t3{background-image:linear-gradient(to right,#D97C93 0%,#D97C93 100%)}
+  /* B — small rounded square (category tile) */
+  .b{width:56px; height:56px; border-radius:16px}
 
-  /* 4 — 1px inline SVG stretched to fill; an image, so not repainted */
-  .t4{background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='1' height='1'><rect width='1' height='1' fill='%23D97C93'/></svg>");
-      background-size:cover}
+  /* C — tiny badge, circular */
+  .c{min-width:20px; height:20px; border-radius:999px; color:#fff;
+     display:inline-flex; align-items:center; justify-content:center;
+     font-size:12px; font-weight:800}
 
-  /* 5 — box-shadow inset filling the box instead of a background */
-  .t5{background:transparent; box-shadow:inset 0 0 0 999px #D97C93}
+  /* D — gradient text, the hero headline case */
+  .d{font-size:26px; font-weight:800;
+     background:linear-gradient(100deg,#F0BFCB,#D97C93 45%,#B59ACB);
+     -webkit-background-clip:text; background-clip:text; color:transparent}
 
-  /* 6 — declared in display-p3 */
-  .t6{background:color(display-p3 .8016 .5041 .5768)}
+  /* E — thin bar (progress) */
+  .e{height:6px; border-radius:3px}
 
-  /* 7 — a wrapper with isolation, which can defeat the repaint heuristic */
-  .t7{background:#D97C93; isolation:isolate; will-change:transform}
+  /* F — gold, to confirm it works for the money colour too */
+  .f{box-shadow:inset 0 0 0 999px #C9A24B; background:transparent;
+     padding:14px 30px; border-radius:999px; color:#2A1219;
+     font-weight:700; display:inline-block}
+
+  /* G — does text stay readable on top? */
+  .g{padding:14px; border-radius:12px; color:#fff; font-weight:600}
 </style>
 </head>
 <body>
 
-<h1>Samsung forced-dark test</h1>
+<h1>Round 2 — does the fix hold up?</h1>
 <p class="note">
-  Open this in Samsung Internet with forced dark mode <b>ON</b>.<br>
-  Every square below should be the SAME soft pink.<br>
-  Tell me which numbers stayed pink and which went red/dark.
+  Forced dark mode still <b>ON</b>.<br>
+  Everything here uses the inset box-shadow trick that survived.<br>
+  I need to know: does the pink <b>clip properly to the rounded corners</b>,
+  or does it spill into a square?
 </p>
 
-<div class="row"><div class="lbl">1 — plain hex (control)</div><div class="sw t1">1</div></div>
-<div class="row"><div class="lbl">2 — flat linear-gradient</div><div class="sw t2">2</div></div>
-<div class="row"><div class="lbl">3 — background-image gradient</div><div class="sw t3">3</div></div>
-<div class="row"><div class="lbl">4 — inline SVG data URI</div><div class="sw t4">4</div></div>
-<div class="row"><div class="lbl">5 — inset box-shadow</div><div class="sw t5">5</div></div>
-<div class="row"><div class="lbl">6 — display-p3</div><div class="sw t6">6</div></div>
-<div class="row"><div class="lbl">7 — isolate + will-change</div><div class="sw t7">7</div></div>
+<div class="row">
+  <div class="lbl">A — pill button (the real CTA)</div>
+  <span class="a fix">جرّب التطبيق الآن</span>
+</div>
+
+<div class="row">
+  <div class="lbl">B — rounded tile</div>
+  <div class="b fix"></div>
+</div>
+
+<div class="row">
+  <div class="lbl">C — circular badge</div>
+  <span class="c fix">6</span>
+</div>
+
+<div class="row">
+  <div class="lbl">D — gradient TEXT (not background) — still red?</div>
+  <div class="d">بحجز تثق فيه</div>
+</div>
+
+<div class="row">
+  <div class="lbl">E — thin bar</div>
+  <div class="e fix"></div>
+</div>
+
+<div class="row">
+  <div class="lbl">F — gold version</div>
+  <span class="f">محفظة</span>
+</div>
+
+<div class="row">
+  <div class="lbl">G — white text legible on the pink?</div>
+  <div class="g fix">تحميل النسخة التجريبية</div>
+</div>
 
 <p class="note" style="margin-top:24px">
-  Reference: this is the colour they should all be —<br>#D97C93
+  Tell me: (1) are A B C E F G all soft pink/gold with clean rounded
+  corners? (2) is D still dark red?
 </p>
-<div class="sw target" style="max-width:200px">#D97C93</div>
 
 </body>
 </html>
