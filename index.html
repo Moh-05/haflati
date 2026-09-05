@@ -1829,6 +1829,86 @@ html:not([data-theme="light"]) .mp-lbl{fill:#6E6470}
 </style>
 <body>
 
+<!-- ── Samsung Internet gate ───────────────────────────────
+     Samsung Internet's forced dark mode repaints the page and there is
+     no way to detect or disable it, so these visitors are asked to
+     switch browsers rather than shown a miscoloured site. The markup
+     is inert until the script below finds Samsung's UA token; every
+     other browser never sees it. ── -->
+<div id="sbGate" hidden>
+  <div class="sg-card">
+    <img class="sg-logo" alt="">
+    <h1 class="sg-h"></h1>
+    <p class="sg-p"></p>
+    <p class="sg-hint"></p>
+    <button class="sg-copy" type="button"></button>
+  </div>
+</div>
+<style>
+  #sbGate{position:fixed; inset:0; z-index:9999; display:grid; place-items:center;
+          padding:26px; background:#171215; overflow:auto}
+  #sbGate .sg-card{max-width:390px; text-align:center}
+  /* Samsung repaints background but not box-shadow, so the brand colours
+     here are painted the same way as the rest of the site. */
+  #sbGate .sg-logo{width:132px; height:auto; margin:0 auto 26px; display:block}
+  #sbGate .sg-h{font-family:'El Messiri','Noto Naskh Arabic',serif; font-size:25px;
+                font-weight:700; line-height:1.5; margin:0 0 14px; color:#F5ECEF}
+  #sbGate .sg-p{font-family:'Cairo','Noto Sans Arabic',sans-serif; font-size:15px;
+                line-height:1.85; margin:0 0 22px; color:#BCA3AA}
+  #sbGate .sg-hint{font-family:'Cairo','Noto Sans Arabic',sans-serif; font-size:13px;
+                   line-height:1.7; margin:0 0 22px; color:#8C7279}
+  #sbGate .sg-copy{font:inherit; font-size:14px; font-weight:700; cursor:pointer;
+                   padding:13px 30px; border-radius:999px; border:0; color:#fff;
+                   background:transparent; box-shadow:inset 0 0 0 999px #D97C93}
+  html[lang="en"] #sbGate .sg-h,
+  html[lang="en"] #sbGate .sg-p,
+  html[lang="en"] #sbGate .sg-hint{font-family:'Plus Jakarta Sans','Inter',system-ui,sans-serif}
+</style>
+<script>
+(function(){
+  // Samsung Internet is the only Chromium browser carrying SamsungBrowser.
+  if (!/SamsungBrowser/i.test(navigator.userAgent)) return;
+
+  var ar = document.documentElement.lang !== 'en';
+  var g  = document.getElementById('sbGate');
+  var url = location.href;
+
+  g.querySelector('.sg-logo').src = 'assets/img/logoDark.webp';
+  g.querySelector('.sg-h').textContent = ar
+    ? 'للحصول على أفضل تجربة'
+    : 'For the best experience';
+  g.querySelector('.sg-p').textContent = ar
+    ? 'متصفّح سامسونج يغيّر ألوان الموقع تلقائيًا. افتح حفلتي في كروم أو أي متصفّح آخر لترى الألوان كما صُمّمت.'
+    : 'Samsung Internet recolours pages automatically. Open Haflati in Chrome or any other browser to see it as designed.';
+  g.querySelector('.sg-hint').textContent = ar
+    ? 'انسخ الرابط، ثم الصقه في كروم.'
+    : 'Copy the link, then paste it into Chrome.';
+
+  var btn = g.querySelector('.sg-copy');
+  var label = ar ? 'نسخ الرابط' : 'Copy link';
+  var done  = ar ? '✓ تم النسخ'  : '✓ Copied';
+  btn.textContent = label;
+  btn.addEventListener('click', function(){
+    // Clipboard API needs a secure context; fall back to a hidden field.
+    var ok = function(){ btn.textContent = done;
+                         setTimeout(function(){ btn.textContent = label; }, 2200); };
+    if (navigator.clipboard && window.isSecureContext){
+      navigator.clipboard.writeText(url).then(ok, function(){});
+    } else {
+      var t = document.createElement('textarea');
+      t.value = url; t.setAttribute('readonly','');
+      t.style.cssText = 'position:absolute;left:-9999px';
+      document.body.appendChild(t); t.select();
+      try{ document.execCommand('copy'); ok(); }catch(e){}
+      document.body.removeChild(t);
+    }
+  });
+
+  g.hidden = false;
+  document.documentElement.style.overflow = 'hidden';
+})();
+</script>
+
 <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
 <symbol id="i-menu" viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></symbol>
 <symbol id="i-chat" viewBox="0 0 24 24"><path d="M21 12a8 8 0 0 1-8 8H7l-4 3V12a8 8 0 0 1 8-8h2a8 8 0 0 1 8 8z"/></symbol>
