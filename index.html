@@ -1350,28 +1350,24 @@ footer{border-top:1px solid var(--edge-soft); padding-block:44px; background:var
    ─────────────────────────────────────────────────── */
 .pagestrip{display:none}
 @media(max-width:999px){
-  /* Sticky under the topbar, and it slides away as you read down and comes
-     back the moment you scroll up — the sections were easy to miss when the
-     strip just scrolled off with the page. */
   .pagestrip{
-    display:flex; gap:0; position:sticky; inset-block-start:0; z-index:20;
+    display:flex; gap:0; position:relative; z-index:20;
     padding:0 max(8px, calc(var(--gut) - 12px)); overflow-x:auto; scrollbar-width:none;
     overscroll-behavior-x:contain; scroll-behavior:smooth;
     background:var(--ink); border-bottom:1px solid var(--edge);
-    transition:transform .3s var(--e);
   }
-  .pagestrip.tucked{transform:translateY(-104%)}
   .pagestrip::-webkit-scrollbar{display:none}
-  /* Labels now name the thing ("Customer app", not "Customer"), so each tab
-     is wider than a sixth of the screen and the strip scrolls horizontally. */
+  /* Labels name the thing ("Customer app", not "Customer"), so a tab is wider
+     than a sixth of the screen and the strip scrolls sideways instead of
+     squeezing six of them in. */
   .pagestrip a{
-    flex:0 0 auto; display:flex; align-items:center; justify-content:center; gap:6px;
-    padding:13px 14px 11px; border:0; border-bottom:2px solid transparent;
+    flex:0 0 auto; display:flex; align-items:center; justify-content:center;
+    padding:13px 15px 11px; border:0; border-bottom:2px solid transparent;
     font-family:var(--ui); font-size:13.5px; font-weight:700; color:var(--muted);
     letter-spacing:-.01em; white-space:nowrap; transition:.22s var(--e);
   }
   .pagestrip a.on{color:var(--rose); border-bottom-color:var(--rose)}
-  .pagestrip .pic{display:block; width:15px; height:15px; flex:none}
+  .pic{display:none}
   /* the burger is now a secondary control */
   .burger{display:none}
 }
@@ -4910,23 +4906,8 @@ let ticking = false;
 // The section strip tucks away while you read down and returns as soon as you
 // scroll up, so the other sections stay one gesture away instead of being
 // stranded at the top of the page.
-let lastY = 0;
-function stripScroll(){
-  const strip = $('#pagestrip');
-  if (!strip) return;
-  const y = window.scrollY;
-  const down = y > lastY;
-  // Past the hero, and only for real movement — a few px of rubber-banding
-  // should not flip it.
-  if (Math.abs(y - lastY) > 6){
-    strip.classList.toggle('tucked', down && y > 260);
-    lastY = y;
-  }
-}
-
 function onScroll(){
   $('#topbar').classList.toggle('stuck', window.scrollY > 40);
-  stripScroll();
   const mid = window.scrollY + window.innerHeight * 0.34;
   let cur = 0;
   sections.forEach((s,i)=>{ if(s && s.offsetTop <= mid) cur = i; });
@@ -4979,10 +4960,6 @@ function route(){
   const chip = $('#pagestrip a[data-route="' + path + '"]');
   if (chip){
     const strip = $('#pagestrip');
-    // A new page always starts with the strip showing, whatever the scroll
-    // direction was on the page we just left.
-    strip.classList.remove('tucked');
-    lastY = 0;
     strip.scrollTo({left: chip.offsetLeft - (strip.clientWidth - chip.clientWidth)/2,
                     behavior: reduceMotion ? 'auto' : 'smooth'});
   }
@@ -5001,6 +4978,14 @@ function route(){
   onScroll();
 }
 window.addEventListener('hashchange', route);
+// Clicking a link whose hash already matches fires no hashchange, so the
+// second tap on "download" or "try the app" did nothing. Re-run the route
+// for those clicks instead of relying on the hash actually changing.
+document.addEventListener('click', e => {
+  const a = e.target.closest('a[href^="#/"]');
+  if (!a) return;
+  if (a.getAttribute('href') === location.hash){ e.preventDefault(); route(); }
+});
 
 $('#burger').addEventListener('click', ()=>{
   $('#drawer').classList.add('on'); document.body.style.overflow='hidden';
