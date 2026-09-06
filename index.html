@@ -1856,60 +1856,51 @@ html:not([data-theme="light"]) .mp-lbl{fill:#6E6470}
   #sbGate .sg-card{max-width:390px; text-align:center}
   /* Samsung repaints background but not box-shadow, so the brand colours
      here are painted the same way as the rest of the site. */
+  /* The gate is English regardless of the page language — a visitor who
+     cannot see the site properly should still be able to read the way out,
+     so it stays in the Latin UI face and reads left to right. */
+  #sbGate{direction:ltr; font-family:'Plus Jakarta Sans','Inter',system-ui,sans-serif}
   #sbGate .sg-logo{width:132px; height:auto; margin:0 auto 26px; display:block}
-  #sbGate .sg-h{font-family:'El Messiri','Noto Naskh Arabic',serif; font-size:25px;
-                font-weight:700; line-height:1.5; margin:0 0 14px; color:#F5ECEF}
-  #sbGate .sg-p{font-family:'Cairo','Noto Sans Arabic',sans-serif; font-size:15px;
-                line-height:1.85; margin:0 0 22px; color:#BCA3AA}
+  #sbGate .sg-h{font-size:25px; font-weight:800; line-height:1.4;
+                margin:0 0 14px; color:#F5ECEF}
+  #sbGate .sg-p{font-size:15px; line-height:1.75; margin:0 0 22px; color:#BCA3AA}
   #sbGate .sg-btns{margin:0 0 14px}
   /* Painted the way the rest of the site is, so the gate survives the
      repaint it exists to warn about. */
-  #sbGate .sg-b{font-family:'Cairo','Noto Sans Arabic',sans-serif; font-size:15px;
-                font-weight:700; text-decoration:none; padding:15px 26px;
-                border-radius:999px; display:block; color:#fff;
+  #sbGate .sg-b{font-size:15px; font-weight:700; text-decoration:none;
+                padding:15px 26px; border-radius:999px; display:block; color:#fff;
                 background:transparent; box-shadow:inset 0 0 0 999px #D97C93}
-  #sbGate .sg-copy{font-family:'Cairo','Noto Sans Arabic',sans-serif; font-size:13px;
-                   font-weight:600; cursor:pointer; padding:9px 18px; border:0;
+  #sbGate .sg-copy{font-family:inherit; font-size:13px; font-weight:600;
+                   cursor:pointer; padding:9px 18px; border:0;
                    background:transparent; color:#8C7279; text-decoration:underline}
-  html[lang="en"] #sbGate .sg-h,
-  html[lang="en"] #sbGate .sg-p,
-  html[lang="en"] #sbGate .sg-b,
-  html[lang="en"] #sbGate .sg-copy{font-family:'Plus Jakarta Sans','Inter',system-ui,sans-serif}
 </style>
 <script>
 (function(){
   // Samsung Internet is the only Chromium browser carrying SamsungBrowser.
   if (!/SamsungBrowser/i.test(navigator.userAgent)) return;
 
-  var ar = document.documentElement.lang !== 'en';
-  var g  = document.getElementById('sbGate');
+  var g   = document.getElementById('sbGate');
   var url = location.href;
 
   g.querySelector('.sg-logo').src = 'assets/img/logoDark.webp';
-  g.querySelector('.sg-h').textContent = ar
-    ? 'للحصول على أفضل تجربة'
-    : 'For the best experience';
-  g.querySelector('.sg-p').textContent = ar
-    ? 'متصفّح سامسونج يغيّر الألوان. الرجاء استخدام متصفّح آخر مثل كروم.'
-    : 'Samsung Internet changes the colours. Please use another browser, such as Chrome.';
+  g.querySelector('.sg-h').textContent = 'For the best experience';
+  g.querySelector('.sg-p').textContent =
+    'Samsung Internet changes the colours. Please use another browser, such as Chrome.';
 
-  // Android intent: URLs hand the request to the system. Naming Chrome's
-  // package opens it directly; omitting the package makes Android show its
-  // own "open with" chooser listing every browser installed. The current
-  // URL rides along in the intent so the visitor lands on the same page,
-  // and S.browser_fallback_url covers a device without the target.
-  // Android intent with no package named, so the system shows its own
-  // "open with" chooser listing every browser installed.
+  // This is the intent form Samsung actually acts on: naming a package makes
+  // it hand the URL to the system, which then shows its own "open with"
+  // chooser rather than silently launching that one app. Dropping the package
+  // — the textbook way to request a chooser — is ignored here and the tap
+  // does nothing at all, so the package stays.
   var any = g.querySelector('.sg-any');
-  any.textContent = ar ? 'الفتح بمتصفّح آخر' : 'Open with…';
+  any.textContent = 'Open with…';
   any.href = 'intent://' + url.replace(/^https?:\/\//, '') +
-             '#Intent;scheme=https;action=android.intent.action.VIEW;' +
-             'category=android.intent.category.BROWSABLE' +
+             '#Intent;scheme=https;package=com.android.chrome' +
              ';S.browser_fallback_url=' + encodeURIComponent(url) + ';end';
 
   var btn = g.querySelector('.sg-copy');
-  var label = ar ? 'نسخ الرابط' : 'Copy link';
-  var done  = ar ? '✓ تم النسخ'  : '✓ Copied';
+  var label = 'Copy link';
+  var done  = '✓ Copied';
   btn.textContent = label;
   btn.addEventListener('click', function(){
     // Clipboard API needs a secure context; fall back to a hidden field.
