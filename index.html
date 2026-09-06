@@ -1840,8 +1840,12 @@ html:not([data-theme="light"]) .mp-lbl{fill:#6E6470}
     <img class="sg-logo" alt="">
     <h1 class="sg-h"></h1>
     <p class="sg-p"></p>
-    <p class="sg-hint"></p>
+    <div class="sg-btns">
+      <a class="sg-b sg-chrome" href="#"></a>
+      <a class="sg-b sg-any" href="#"></a>
+    </div>
     <button class="sg-copy" type="button"></button>
+    <p class="sg-hint"></p>
   </div>
 </div>
 <style>
@@ -1859,13 +1863,24 @@ html:not([data-theme="light"]) .mp-lbl{fill:#6E6470}
                 font-weight:700; line-height:1.5; margin:0 0 14px; color:#F5ECEF}
   #sbGate .sg-p{font-family:'Cairo','Noto Sans Arabic',sans-serif; font-size:15px;
                 line-height:1.85; margin:0 0 22px; color:#BCA3AA}
-  #sbGate .sg-hint{font-family:'Cairo','Noto Sans Arabic',sans-serif; font-size:13px;
-                   line-height:1.7; margin:0 0 22px; color:#8C7279}
-  #sbGate .sg-copy{font:inherit; font-size:14px; font-weight:700; cursor:pointer;
-                   padding:13px 30px; border-radius:999px; border:0; color:#fff;
-                   background:transparent; box-shadow:inset 0 0 0 999px #D97C93}
+  #sbGate .sg-hint{font-family:'Cairo','Noto Sans Arabic',sans-serif; font-size:12.5px;
+                   line-height:1.7; margin:18px 0 0; color:#8C7279}
+  #sbGate .sg-btns{display:flex; flex-direction:column; gap:11px; margin:0 0 16px}
+  #sbGate .sg-b{font-family:'Cairo','Noto Sans Arabic',sans-serif; font-size:15px;
+                font-weight:700; text-decoration:none; padding:15px 26px;
+                border-radius:999px; display:block}
+  /* Solid rose and outline, painted the way the rest of the site is so the
+     gate survives the repaint it exists to warn about. */
+  #sbGate .sg-chrome{color:#fff; background:transparent;
+                     box-shadow:inset 0 0 0 999px #D97C93}
+  #sbGate .sg-any{color:#F5ECEF; box-shadow:inset 0 0 0 1px #43323A}
+  #sbGate .sg-copy{font-family:'Cairo','Noto Sans Arabic',sans-serif; font-size:13px;
+                   font-weight:600; cursor:pointer; padding:9px 18px; border:0;
+                   background:transparent; color:#8C7279; text-decoration:underline}
   html[lang="en"] #sbGate .sg-h,
   html[lang="en"] #sbGate .sg-p,
+  html[lang="en"] #sbGate .sg-b,
+  html[lang="en"] #sbGate .sg-copy,
   html[lang="en"] #sbGate .sg-hint{font-family:'Plus Jakarta Sans','Inter',system-ui,sans-serif}
 </style>
 <script>
@@ -1885,8 +1900,34 @@ html:not([data-theme="light"]) .mp-lbl{fill:#6E6470}
     ? 'متصفّح سامسونج يغيّر ألوان الموقع تلقائيًا. افتح حفلتي في كروم أو أي متصفّح آخر لترى الألوان كما صُمّمت.'
     : 'Samsung Internet recolours pages automatically. Open Haflati in Chrome or any other browser to see it as designed.';
   g.querySelector('.sg-hint').textContent = ar
-    ? 'انسخ الرابط، ثم الصقه في كروم.'
-    : 'Copy the link, then paste it into Chrome.';
+    ? 'إن لم يفتح أي زر، انسخ الرابط والصقه في المتصفّح.'
+    : 'If neither button works, copy the link and paste it into your browser.';
+
+  // Android intent: URLs hand the request to the system. Naming Chrome's
+  // package opens it directly; omitting the package makes Android show its
+  // own "open with" chooser listing every browser installed. The current
+  // URL rides along in the intent so the visitor lands on the same page,
+  // and S.browser_fallback_url covers a device without the target.
+  var bare = url.replace(/^https?:\/\//, '');
+  var fb = function(u){
+    return ';S.browser_fallback_url=' + encodeURIComponent(u) + ';end';
+  };
+
+  // If Chrome is missing, offer to install it — sending the visitor back to
+  // this page would only reopen the gate in Samsung.
+  var chrome = g.querySelector('.sg-chrome');
+  chrome.textContent = ar ? 'الفتح في كروم' : 'Open in Chrome';
+  chrome.href = 'intent://' + bare + '#Intent;scheme=https;' +
+                'package=com.android.chrome' +
+                fb('https://play.google.com/store/apps/details?id=com.android.chrome');
+
+  // No package named, so Android shows its own chooser listing every browser
+  // installed. Nothing useful to fall back to here, so it stays on the page.
+  var any = g.querySelector('.sg-any');
+  any.textContent = ar ? 'الفتح بمتصفّح آخر' : 'Open with another browser';
+  any.href = 'intent://' + bare + '#Intent;scheme=https;' +
+             'action=android.intent.action.VIEW;' +
+             'category=android.intent.category.BROWSABLE' + fb(url);
 
   var btn = g.querySelector('.sg-copy');
   var label = ar ? 'نسخ الرابط' : 'Copy link';
