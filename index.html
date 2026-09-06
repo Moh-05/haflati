@@ -1350,22 +1350,28 @@ footer{border-top:1px solid var(--edge-soft); padding-block:44px; background:var
    ─────────────────────────────────────────────────── */
 .pagestrip{display:none}
 @media(max-width:999px){
+  /* Sticky under the topbar, and it slides away as you read down and comes
+     back the moment you scroll up — the sections were easy to miss when the
+     strip just scrolled off with the page. */
   .pagestrip{
-    display:flex; gap:0; position:relative; z-index:20;
+    display:flex; gap:0; position:sticky; inset-block-start:0; z-index:20;
     padding:0 max(8px, calc(var(--gut) - 12px)); overflow-x:auto; scrollbar-width:none;
     overscroll-behavior-x:contain; scroll-behavior:smooth;
-    background:var(--ink); border-bottom:1px solid var(--edge-soft);
+    background:var(--ink); border-bottom:1px solid var(--edge);
+    transition:transform .3s var(--e);
   }
+  .pagestrip.tucked{transform:translateY(-104%)}
   .pagestrip::-webkit-scrollbar{display:none}
+  /* Labels now name the thing ("Customer app", not "Customer"), so each tab
+     is wider than a sixth of the screen and the strip scrolls horizontally. */
   .pagestrip a{
-    flex:1 1 0; min-width:0; display:flex; align-items:center; justify-content:center;
-    padding:11px 4px 10px; border:0; border-bottom:2px solid transparent;
-    font-family:var(--ui); font-size:11.5px; font-weight:700; color:var(--dim);
+    flex:0 0 auto; display:flex; align-items:center; justify-content:center; gap:6px;
+    padding:13px 14px 11px; border:0; border-bottom:2px solid transparent;
+    font-family:var(--ui); font-size:13.5px; font-weight:700; color:var(--muted);
     letter-spacing:-.01em; white-space:nowrap; transition:.22s var(--e);
-    overflow:hidden; text-overflow:ellipsis;
   }
   .pagestrip a.on{color:var(--rose); border-bottom-color:var(--rose)}
-  .pic{display:none}
+  .pagestrip .pic{display:block; width:15px; height:15px; flex:none}
   /* the burger is now a secondary control */
   .burger{display:none}
 }
@@ -1797,6 +1803,9 @@ html:not([data-theme="light"]) .mp-lbl{fill:#6E6470}
 
 .cs-view{display:none}
 .cs-view.on{display:block; animation:pageIn .35s var(--e)}
+/* The admin views are real captures of the console rather than rebuilt
+   markup, so each panel is just the screenshot filling the frame. */
+.cs-shot{display:block; width:100%; height:auto; border-radius:8px}
 .cs-item[data-nav]{cursor:pointer}
 .ad-btn{
   display:flex; align-items:center; gap:8px; padding:10px 12px; border-radius:10px;
@@ -1975,7 +1984,7 @@ html:not([data-theme="light"]) .mp-lbl{fill:#6E6470}
 <symbol id="i-flower" viewBox="0 0 24 24"><circle cx="12" cy="9" r="2.4"/><path d="M12 6.6a2.4 2.4 0 1 1 0-.1M14.4 9a2.4 2.4 0 1 1 .1 0M12 11.4a2.4 2.4 0 1 1 0 .1M9.6 9a2.4 2.4 0 1 1-.1 0"/><path d="M12 13v7"/></symbol>
 <symbol id="i-cake" viewBox="0 0 24 24"><path d="M4 20v-6a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v6z"/><path d="M4 16c2 1.5 3 1.5 4 0s2-1.5 4 0 3 1.5 4 0 2-1.5 4 0"/><path d="M12 12V8M9 12V9M15 12V9"/></symbol>
 </defs></svg>
-<a class="skip" href="#stage" data-i18n="skip">تخطّي إلى التجربة التفاعلية</a>
+<a class="skip" href="#/#stage" data-i18n="skip">تخطّي إلى التجربة التفاعلية</a>
 
 <!-- ══ TOP BAR ══ -->
 <header class="topbar" id="topbar">
@@ -2006,9 +2015,9 @@ html:not([data-theme="light"]) .mp-lbl{fill:#6E6470}
   <button class="drawer-close" id="drawerClose" aria-label="Close"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
   <a href="#/"         data-route="/"         ><span data-i18n="navHome">الرئيسية</span><small>01</small></a>
   <a href="#/about"    data-route="/about"    ><span data-i18n="navAbout">من نحن</span><small>02</small></a>
-  <a href="#/app"      data-route="/app"      ><span data-i18n="navUserShort">العميل</span><small>03</small></a>
-  <a href="#/partners" data-route="/partners" ><span data-i18n="navVendorShort">المزوّد</span><small>04</small></a>
-  <a href="#/admin"    data-route="/admin"    ><span data-i18n="navAdminShort">الإدارة</span><small>05</small></a>
+  <a href="#/app"      data-route="/app"      ><span data-i18n="navUserShort">تطبيق العميل</span><small>03</small></a>
+  <a href="#/partners" data-route="/partners" ><span data-i18n="navVendorShort">تطبيق المزوّد</span><small>04</small></a>
+  <a href="#/admin"    data-route="/admin"    ><span data-i18n="navAdminShort">لوحة الإدارة</span><small>05</small></a>
   <a href="#/tech"     data-route="/tech"     ><span data-i18n="navTech">التقنية</span><small>06</small></a>
   <a href="#/download" data-route="/download" ><span data-i18n="navDownload">تحميل التطبيق</span><small>07</small></a>
 </div>
@@ -2912,9 +2921,9 @@ html:not([data-theme="light"]) .mp-lbl{fill:#6E6470}
 <nav class="pagestrip" id="pagestrip" aria-label="أقسام الموقع">
   <a href="#/"         data-route="/"        ><svg class="pic"><use href="#i-home"/></svg><span data-i18n="navHome">الرئيسية</span></a>
   <a href="#/about"    data-route="/about"   ><svg class="pic"><use href="#i-users"/></svg><span data-i18n="navAbout">من نحن</span></a>
-  <a href="#/app"      data-route="/app"     ><svg class="pic"><use href="#i-phone"/></svg><span data-i18n="navUserShort">العميل</span></a>
-  <a href="#/partners" data-route="/partners"><svg class="pic"><use href="#i-case"/></svg><span data-i18n="navVendorShort">المزوّد</span></a>
-  <a href="#/admin"    data-route="/admin"   ><svg class="pic"><use href="#i-shield"/></svg><span data-i18n="navAdminShort">الإدارة</span></a>
+  <a href="#/app"      data-route="/app"     ><svg class="pic"><use href="#i-phone"/></svg><span data-i18n="navUserShort">تطبيق العميل</span></a>
+  <a href="#/partners" data-route="/partners"><svg class="pic"><use href="#i-case"/></svg><span data-i18n="navVendorShort">تطبيق المزوّد</span></a>
+  <a href="#/admin"    data-route="/admin"   ><svg class="pic"><use href="#i-shield"/></svg><span data-i18n="navAdminShort">لوحة الإدارة</span></a>
   <a href="#/tech"     data-route="/tech"    ><svg class="pic"><use href="#i-grid"/></svg><span data-i18n="navTech">التقنية</span></a>
 </nav>
 
@@ -2922,10 +2931,10 @@ html:not([data-theme="light"]) .mp-lbl{fill:#6E6470}
 <div class="page on" id="p-home">
 <!-- ══ SECTION RAIL ══ -->
 <nav class="rail" id="rail" aria-label="أقسام الصفحة">
-  <a href="#stage"><i></i><span data-i18n="railDemo">التجربة</span></a>
-  <a href="#market"><i></i><span data-i18n="railMarket">السوق</span></a>
-  <a href="#money"><i></i><span data-i18n="railMoney">المال</span></a>
-  <a href="#download"><i></i><span data-i18n="railGet">التحميل</span></a>
+  <a href="#/#stage"><i></i><span data-i18n="railDemo">التجربة</span></a>
+  <a href="#/#market"><i></i><span data-i18n="railMarket">السوق</span></a>
+  <a href="#/#money"><i></i><span data-i18n="railMoney">المال</span></a>
+  <a href="#/download"><i></i><span data-i18n="railGet">التحميل</span></a>
 </nav>
 
 <!-- ══ HERO ══ -->
@@ -2942,8 +2951,8 @@ html:not([data-theme="light"]) .mp-lbl{fill:#6E6470}
       المال يبقى محجوزًا عند حفلتي حتى تنتهي الخدمة فعليًا، فلا أحد يدفع على وعد.
     </p>
     <div class="hero-cta">
-      <a href="#stage" class="btn btn-solid" data-i18n="heroCta1">جرّب التطبيق الآن</a>
-      <a href="#download" class="btn btn-ghost" data-i18n="heroCta2">تحميل النسخة التجريبية</a>
+      <a href="#/#stage" class="btn btn-solid" data-i18n="heroCta1">جرّب التطبيق الآن</a>
+      <a href="#/download" class="btn btn-ghost" data-i18n="heroCta2">تحميل النسخة التجريبية</a>
     </div>
    </div>
    <div class="hero-phone">
@@ -3521,107 +3530,26 @@ html:not([data-theme="light"]) .mp-lbl{fill:#6E6470}
 
         <!-- 0 · dashboard -->
         <div class="cs-view on" data-view="0">
-          <div class="cs-content">
-            <div class="cs-h">
-              <span data-i18n="ad_welcome">أهلاً بعودتك، عامر</span>
-              <small data-i18n="ad_sub">نظرة عامة على المنصّة — كل شيء في مكان واحد</small>
-            </div>
-            <div class="cs-stats">
-              <div class="cs-stat tone-lav"><span class="ci"><svg class="ic"><use href="#i-users"/></svg></span><div class="cv">1,482</div><div class="cl" data-i18n="ad_s1">إجمالي المستخدمين</div></div>
-              <div class="cs-stat tone-pri"><span class="ci"><svg class="ic"><use href="#i-shop"/></svg></span><div class="cv">96</div><div class="cl" data-i18n="ad_s2">مزوّدون معتمدون</div></div>
-              <div class="cs-stat tone-suc"><span class="ci"><svg class="ic"><use href="#i-cal"/></svg></span><div class="cv">214</div><div class="cl" data-i18n="ad_s3">حجوزات نشطة</div></div>
-              <div class="cs-stat tone-warn"><span class="ci"><svg class="ic"><use href="#i-wallet"/></svg></span><div class="cv">18.4M</div><div class="cl" data-i18n="ad_s4">أرباح المنصّة</div></div>
-            </div>
-            <div class="cs-panels">
-              <div class="cs-panel">
-                <div class="cs-ph"><b data-i18n="ad_trend">أرباح المنصّة — آخر ١٢ شهرًا</b><span data-i18n="ad_trendSub">من المدفوعات المؤكَّدة فقط</span></div>
-                <div class="cs-chart">
-                  <i style="height:34%"></i><i style="height:41%"></i><i style="height:38%"></i>
-                  <i style="height:52%"></i><i style="height:47%"></i><i style="height:61%"></i>
-                  <i style="height:58%"></i><i style="height:72%"></i><i style="height:66%"></i>
-                  <i style="height:81%"></i><i style="height:88%"></i><i style="height:100%"></i>
-                </div>
-              </div>
-              <div class="cs-panel">
-                <div class="cs-ph"><b data-i18n="ad_kyc">طابور المراجعة</b><span data-i18n="ad_kycSub">٧ مزوّدين بانتظار الموافقة</span></div>
-                <div class="cs-q"><span class="av" data-img="venueSq"></span><span class="nm" data-i18n="ad_q1">قاعة النخيل</span><span class="cs-pill w" data-i18n="ad_pend">قيد المراجعة</span></div>
-                <div class="cs-q"><span class="av" data-img="photoSq"></span><span class="nm" data-i18n="ad_q2">عدسة الشام</span><span class="cs-pill w" data-i18n="ad_pend">قيد المراجعة</span></div>
-                <div class="cs-q"><span class="av" data-img="cakeSq"></span><span class="nm" data-i18n="ad_q3">حلويات المهدي</span><span class="cs-pill s" data-i18n="ad_appr">اعتُمد</span></div>
-              </div>
-            </div>
-          </div>
+          <img class="cs-shot" loading="lazy" decoding="async"
+               src="assets/img/sh_addashboard.webp" alt="">
         </div>
 
         <!-- 1 · vendor review -->
         <div class="cs-view" data-view="1">
-          <div class="cs-content">
-            <div class="cs-h">
-              <span data-i18n="adv_h">مراجعة مزوّد</span>
-              <small data-i18n="adv_sub">لا يظهر أي مزوّد للعملاء قبل أن يمرّ من هنا</small>
-            </div>
-            <div class="cs-panels" style="grid-template-columns:1fr 1fr">
-              <div class="cs-panel">
-                <div class="cs-ph"><b data-i18n="ad_q1">قاعة النخيل</b><span data-i18n="adv_cat">قاعة أفراح · المزّة، دمشق</span></div>
-                <div class="cs-q"><span class="av" data-img="venueSq"></span><span class="nm" data-i18n="adv_f1">صورة الغلاف</span><span class="cs-pill s">✓</span></div>
-                <div class="cs-q"><span class="av" data-img="photoSq"></span><span class="nm" data-i18n="adv_f2">هويّة صاحب النشاط</span><span class="cs-pill s">✓</span></div>
-                <div class="cs-q"><span class="av" data-img="cakeSq"></span><span class="nm" data-i18n="adv_f3">إثبات العنوان</span><span class="cs-pill w" data-i18n="adv_miss">ناقص</span></div>
-              </div>
-              <div class="cs-panel">
-                <div class="cs-ph"><b data-i18n="adv_dec">القرار</b><span data-i18n="adv_decSub">كلاهما يصل المزوّد بنصّه</span></div>
-                <div style="padding:11px; display:flex; flex-direction:column; gap:9px">
-                  <div class="ad-btn ok"><svg class="ic sm"><use href="#i-checkc"/></svg><span data-i18n="adv_ok">اعتماد وإظهاره للعملاء</span></div>
-                  <div class="ad-btn no"><svg class="ic sm"><use href="#i-ban"/></svg><span data-i18n="adv_no">رفض مع سبب مكتوب</span></div>
-                  <div class="ad-note" data-i18n="adv_note">الرفض بلا سبب غير ممكن — الحقل إلزامي، ويصل نصّه إلى المزوّد كما هو.</div>
-                </div>
-              </div>
-            </div>
-          </div>
+          <img class="cs-shot" loading="lazy" decoding="async"
+               src="assets/img/sh_adkyc.webp" alt="">
         </div>
 
         <!-- 2 · money -->
         <div class="cs-view" data-view="2">
-          <div class="cs-content">
-            <div class="cs-h">
-              <span data-i18n="adm_h">الأموال المستحقّة</span>
-              <small data-i18n="adm_sub">استرجاعات لم تُدفع، وطلبات سحب معلّقة</small>
-            </div>
-            <div class="cs-stats" style="grid-template-columns:repeat(3,1fr)">
-              <div class="cs-stat tone-err"><span class="ci"><svg class="ic"><use href="#i-up"/></svg></span><div class="cv">2</div><div class="cl" data-i18n="adm_s1">استرجاعات مستحقّة</div></div>
-              <div class="cs-stat tone-warn"><span class="ci"><svg class="ic"><use href="#i-wallet"/></svg></span><div class="cv">5</div><div class="cl" data-i18n="adm_s2">طلبات سحب</div></div>
-              <div class="cs-stat tone-suc"><span class="ci"><svg class="ic"><use href="#i-checkc"/></svg></span><div class="cv">31</div><div class="cl" data-i18n="adm_s3">سُوِّيت هذا الشهر</div></div>
-            </div>
-            <div class="cs-panel">
-              <div class="cs-ph"><b data-i18n="adm_t">لكل مبلغ ثلاثة مصائر معلنة</b><span data-i18n="adm_tSub">دُفع · أُسقط بسبب مكتوب · ما زال مستحقًّا</span></div>
-              <div class="cs-q"><span class="av" data-img="photoSq"></span><span class="nm" data-i18n="adm_r1">استرجاع #4980 · ريم الأحمد</span><span class="cs-pill w" data-i18n="adm_due">مستحقّ</span></div>
-              <div class="cs-q"><span class="av" data-img="venueSq"></span><span class="nm" data-i18n="adm_r2">سحب · قصر الياسمين</span><span class="cs-pill w" data-i18n="adm_pend2">قيد التنفيذ</span></div>
-              <div class="cs-q"><span class="av" data-img="cakeSq"></span><span class="nm" data-i18n="adm_r3">استرجاع #4871 · سامر ودانية</span><span class="cs-pill s" data-i18n="adm_paid">دُفع</span></div>
-            </div>
-          </div>
+          <img class="cs-shot" loading="lazy" decoding="async"
+               src="assets/img/sh_adfinancials.webp" alt="">
         </div>
 
         <!-- 3 · a complaint -->
         <div class="cs-view" data-view="3">
-          <div class="cs-content">
-            <div class="cs-h">
-              <span data-i18n="adc_h">شكوى مفتوحة</span>
-              <small data-i18n="adc_sub">الحجز والمحادثة معروضان مع القرار، لا منفصلين عنه</small>
-            </div>
-            <div class="cs-panels">
-              <div class="cs-panel">
-                <div class="cs-ph"><b data-i18n="adc_t">المزوّد لم يحضر في الموعد</b><span data-i18n="adc_meta">عدم حضور · مرفق بحجز #4980 · ريم الأحمد</span></div>
-                <div class="cs-q"><span class="av" data-img="venueSq"></span><span class="nm" data-i18n="adc_bk">باقة الزفاف · ١٢ أيلول · 500,000 ل.س</span><span class="cs-pill w" data-i18n="ad_pend">قيد المراجعة</span></div>
-                <div style="padding:0 11px 11px"><div class="ad-note" data-i18n="adc_chat">المحادثة بين الطرفين مرفقة كاملة، فالقرار يُتّخذ على السياق لا على رواية طرف واحد.</div></div>
-              </div>
-              <div class="cs-panel">
-                <div class="cs-ph"><b data-i18n="adv_dec">القرار</b><span data-i18n="adc_two">خياران فقط</span></div>
-                <div style="padding:11px; display:flex; flex-direction:column; gap:9px">
-                  <div class="ad-btn no"><svg class="ic sm"><use href="#i-ban"/></svg><span data-i18n="adc_c1">إلغاء مع استرجاع كامل</span></div>
-                  <div class="ad-btn ok"><svg class="ic sm"><use href="#i-checkc"/></svg><span data-i18n="adc_c2">إبقاء الحجز ليكمله المزوّد</span></div>
-                  <div class="ad-note" data-i18n="adc_log">أيًّا كان القرار، يُكتب في سجلّ التدقيق بمن نفّذه ومتى.</div>
-                </div>
-              </div>
-            </div>
-          </div>
+          <img class="cs-shot" loading="lazy" decoding="async"
+               src="assets/img/sh_admoderation.webp" alt="">
         </div>
 
       </div>
@@ -3862,10 +3790,11 @@ html:not([data-theme="light"]) .mp-lbl{fill:#6E6470}
       <p style="margin-top:10px" data-i18n="ftP">مشروع ١ — كلية الهندسة المعلوماتية، جامعة دمشق</p>
     </div>
     <div class="foot-links">
-      <a href="#stage" data-i18n="railDemo">التجربة</a>
-      <a href="#money" data-i18n="railMoney">المال</a>
-      <a href="#trust" data-i18n="railTrust">الثقة</a>
-      <a href="#download" data-i18n="railGet">التحميل</a>
+      <a href="#/#stage" data-i18n="railDemo">التجربة</a>
+      <a href="#/#money" data-i18n="railMoney">المال</a>
+      <!-- there is no #trust section; the trust story lives in #market -->
+      <a href="#/#market" data-i18n="railTrust">الثقة</a>
+      <a href="#/download" data-i18n="railGet">التحميل</a>
     </div>
   </div>
 </footer>
@@ -3958,7 +3887,7 @@ const T = {
   ebVendorWhy:["ما يميّزه","What sets it apart"],
   vwH:["مصمَّم حول يوم عمل حقيقي","Designed around a real working day"],
   navAdmin:["لوحة الإدارة","Admin"],
-  navUserShort:["العميل","Customer"], navVendorShort:["المزوّد","Vendor"], navAdminShort:["الإدارة","Admin"],
+  navUserShort:["تطبيق العميل","Customer app"], navVendorShort:["تطبيق المزوّد","Vendor app"], navAdminShort:["لوحة الإدارة","Admin panel"],
   ebAdmin:["لوحة الإدارة","Admin console"],
   adH:["الطرف الثالث الذي يجعل الضمان ممكنًا","The third party that makes escrow possible"],
   adLead:["سوق فيه ضمان يحتاج جهة تفصل عند الخلاف. لوحة الإدارة هي تلك الجهة: تراجع المزوّدين قبل ظهورهم، وتتابع كل مبلغ محجوز، وتغلق الشكاوى بقرار مكتوب في سجلّ لا يُمحى.",
@@ -4328,8 +4257,8 @@ const T = {
   x_open:["مفتوح الآن","Open now"],
   segUser:["تطبيق العميل","Customer app"], segVendor:["تطبيق المزوّد","Vendor app"],
   segOrder:["طلب منتج","Product order"], segService:["حجز خدمة","Service booking"], mon1:["عند حفلتي","With Haflati"], mon3:["متاح للسحب","Withdrawable"],
-  navVendorShort:["المزوّد","Vendor"],
-  navAdminShort:["الإدارة","Admin"],
+  navVendorShort:["تطبيق المزوّد","Vendor app"],
+  navAdminShort:["لوحة الإدارة","Admin panel"],
   segVendor:["تطبيق المزوّد","Vendor app"],
   segService:["حجز خدمة","Service booking"],
   railDemo:["التجربة","Demo"], railGet:["التحميل","Get it"], railMarket:["السوق","Market"],
@@ -4978,8 +4907,26 @@ $$('[data-count]').forEach(el=>cio.observe(el));
 const railLinks = $$('#rail a');
 const sections  = railLinks.map(a=>$(a.getAttribute('href')));
 let ticking = false;
+// The section strip tucks away while you read down and returns as soon as you
+// scroll up, so the other sections stay one gesture away instead of being
+// stranded at the top of the page.
+let lastY = 0;
+function stripScroll(){
+  const strip = $('#pagestrip');
+  if (!strip) return;
+  const y = window.scrollY;
+  const down = y > lastY;
+  // Past the hero, and only for real movement — a few px of rubber-banding
+  // should not flip it.
+  if (Math.abs(y - lastY) > 6){
+    strip.classList.toggle('tucked', down && y > 260);
+    lastY = y;
+  }
+}
+
 function onScroll(){
   $('#topbar').classList.toggle('stuck', window.scrollY > 40);
+  stripScroll();
   const mid = window.scrollY + window.innerHeight * 0.34;
   let cur = 0;
   sections.forEach((s,i)=>{ if(s && s.offsetTop <= mid) cur = i; });
@@ -5032,6 +4979,10 @@ function route(){
   const chip = $('#pagestrip a[data-route="' + path + '"]');
   if (chip){
     const strip = $('#pagestrip');
+    // A new page always starts with the strip showing, whatever the scroll
+    // direction was on the page we just left.
+    strip.classList.remove('tucked');
+    lastY = 0;
     strip.scrollTo({left: chip.offsetLeft - (strip.clientWidth - chip.clientWidth)/2,
                     behavior: reduceMotion ? 'auto' : 'smooth'});
   }
