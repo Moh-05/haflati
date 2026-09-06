@@ -4692,7 +4692,11 @@ function applyTheme(){
       webm.src = IMG['vid'+t+'Webm'];   // VP9 — Chrome, Firefox, Edge, Safari 16+
       mp4.src  = IMG['vid'+t+'Mp4'];    // H.264 — everything older
       vid.load();
-      vid.play().catch(()=>{});
+      // play() returns a promise in modern browsers but undefined in some,
+      // and calling .catch() on undefined throws — which killed the rest of
+      // this script, route() included, leaving nothing on the page clickable.
+      const p = vid.play();
+      if (p && typeof p.catch === 'function') p.catch(()=>{});
     }
   }
   $$('img[data-pair]').forEach(i=>{
@@ -4901,7 +4905,14 @@ $$('[data-count]').forEach(el=>cio.observe(el));
 
 // topbar + rail
 const railLinks = $$('#rail a');
-const sections  = railLinks.map(a=>$(a.getAttribute('href')));
+// Rail hrefs are router paths like "#/#stage" or "#/download", not selectors —
+// passing one straight to querySelector throws and takes the whole script with
+// it. Pull the section id out of the end instead.
+const sections  = railLinks.map(a=>{
+  const h = a.getAttribute('href') || '';
+  const id = h.includes('#', 1) ? h.slice(h.lastIndexOf('#') + 1) : h.replace(/^#\//, '');
+  return document.getElementById(id);
+});
 let ticking = false;
 // The section strip tucks away while you read down and returns as soon as you
 // scroll up, so the other sections stay one gesture away instead of being
